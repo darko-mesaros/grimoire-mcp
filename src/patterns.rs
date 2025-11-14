@@ -46,7 +46,9 @@ pub struct PatternMetadata {
     tags: Vec<String>,
 }
 
-// Request structs
+// === Request structs ===
+
+/// Search parameters
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct PatternSearchRequest {
     #[schemars(description = "Text Search")]
@@ -59,12 +61,14 @@ pub struct PatternSearchRequest {
     tag: Option<String>,
 }
 
+/// Get parameters
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct GetPatternRequest {
     #[schemars(description = "Pattern Name")]
     pattern_name: String,
 }
 
+/// Create parameters
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct CreatePatternRequest {
     #[schemars(description = "Pattern name")]
@@ -82,6 +86,7 @@ pub struct CreatePatternRequest {
 }
 
 impl Patterns {
+    /// Parse pattern from file
     fn load_patterns(path: &Path) -> Option<Pattern> {
         let content = fs::read_to_string(path).ok()?;
         let rest = content.strip_prefix("---\n")?;
@@ -97,6 +102,7 @@ impl Patterns {
         })
     }
 
+    /// Load patterns from the provided directory
     fn load_all_patterns() -> Vec<Pattern> {
         let patterns_dir =
             std::env::var(ENV_PATTERNS_DIR).expect("PATTERNS_DIR environment variable MUST be set");
@@ -287,6 +293,7 @@ framework: {}
 
 #[tool_handler]
 impl ServerHandler for Patterns {
+    /// Provide server information and capabilities
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
             protocol_version: ProtocolVersion::V_2024_11_05,

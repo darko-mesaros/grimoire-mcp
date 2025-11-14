@@ -1,11 +1,9 @@
 use anyhow::Result;
-//use common::counter::Counter;
 use rmcp::{ServiceExt, transport::stdio};
 use tracing_subscriber::{self, EnvFilter};
 mod patterns;
 use patterns::Patterns;
 
-/// npx @modelcontextprotocol/inspector cargo run -p mcp-server-examples --example std_io
 #[tokio::main]
 async fn main() -> Result<()> {
     // Initialize the tracing subscriber with file and stdout logging
@@ -15,7 +13,7 @@ async fn main() -> Result<()> {
         .with_ansi(false)
         .init();
 
-    tracing::info!("Starting MCP server");
+    tracing::info!("Starting Grimoire-MCP server");
 
     // Create an instance of our router
     let service = Patterns::new().serve(stdio()).await.inspect_err(|e| {
