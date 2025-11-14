@@ -178,13 +178,14 @@ impl Patterns {
         let results: Vec<&Pattern> = self
             .patterns
             .iter()
-            .filter(|p| {
+            .filter(|p| { // Search through the fields
                 category.as_ref().is_none_or(|c| &p.metadata.category == c)
                     && framework
                         .as_ref()
                         .is_none_or(|f| p.metadata.framework.as_ref() == Some(f))
                     && tag.as_ref().is_none_or(|t| p.metadata.tags.contains(t))
-                    && query.as_ref().is_none_or(|q| {
+                    && query.as_ref().is_none_or(|q| { 
+                    // Match query to the pattern name and content
                         let searchable =
                             format!("{} {}", p.metadata.pattern, p.content).to_lowercase();
                         searchable.contains(&q.to_lowercase())
