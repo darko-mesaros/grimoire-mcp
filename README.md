@@ -62,7 +62,7 @@ just mcp-test
 cargo build --release
 ```
 
-The compiled binary will be at `./target/release/dont-forget-your-code`.
+The compiled binary will be at `./target/release/grimoire-mcp`.
 
 ## MCP Client Configuration
 
@@ -74,7 +74,7 @@ Add to your MCP configuration:
 {
   "mcpServers": {
     "pattern-library": {
-      "command": "/path/to/dont-forget-your-code/target/release/grimoire-mcp",
+      "command": "/path/to/grimoire-mcp/target/release/grimoire-mcp",
       "env": {
         "PATTERNS_DIR": "/path/to/your/patterns"
       }
@@ -92,7 +92,7 @@ Add to your Cursor settings:
   "mcp": {
     "servers": {
       "pattern-library": {
-        "command": "/path/to/dont-forget-your-code/target/release/grimoire-mcp",
+        "command": "/path/to/grimoire-mcp/target/release/grimoire-mcp",
         "env": {
           "PATTERNS_DIR": "/path/to/your/patterns"
         }
@@ -110,7 +110,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
 {
   "mcpServers": {
     "pattern-library": {
-      "command": "/path/to/dont-forget-your-code/target/release/grimoire-mcp",
+      "command": "/path/to/grimoire-mcp/target/release/grimoire-mcp",
       "env": {
         "PATTERNS_DIR": "/path/to/your/patterns"
       }
