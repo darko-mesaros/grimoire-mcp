@@ -1,6 +1,8 @@
-# Pattern Library MCP Server
+# Grimoire-MCP - Development Pattern Library
 
-A Model Context Protocol (MCP) server for managing software development patterns stored as markdown files with YAML frontmatter.
+As I am leveling up my development skills, I always needed a way to quickly store some best practices I ended up implementing in projects. What if my coding assistant could just save it to some ... ✨ pattern library ✨. Well now it can! Oh, and it can read code patterns too! 🥳
+
+So, the Grimoire-MCP is a Model Context Protocol (MCP) server for managing software development patterns stored as markdown files with YAML frontmatter. Oh, and it's all on your filesystem!
 
 ## Setup
 
@@ -15,6 +17,8 @@ export PATTERNS_DIR="/path/to/your/patterns"
 The server will fail to start if this variable is not set or if the directory doesn't exist.
 
 ### Pattern File Format
+
+The LLM will create patterns on your behalf, but you are more than welcome to store them yourself as well.
 
 Patterns are stored as markdown files with YAML frontmatter:
 
@@ -70,7 +74,7 @@ Add to your MCP configuration:
 {
   "mcpServers": {
     "pattern-library": {
-      "command": "/path/to/dont-forget-your-code/target/release/dont-forget-your-code",
+      "command": "/path/to/dont-forget-your-code/target/release/grimoire-mcp",
       "env": {
         "PATTERNS_DIR": "/path/to/your/patterns"
       }
@@ -88,7 +92,7 @@ Add to your Cursor settings:
   "mcp": {
     "servers": {
       "pattern-library": {
-        "command": "/path/to/dont-forget-your-code/target/release/dont-forget-your-code",
+        "command": "/path/to/dont-forget-your-code/target/release/grimoire-mcp",
         "env": {
           "PATTERNS_DIR": "/path/to/your/patterns"
         }
@@ -106,7 +110,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
 {
   "mcpServers": {
     "pattern-library": {
-      "command": "/path/to/dont-forget-your-code/target/release/dont-forget-your-code",
+      "command": "/path/to/dont-forget-your-code/target/release/grimoire-mcp",
       "env": {
         "PATTERNS_DIR": "/path/to/your/patterns"
       }
