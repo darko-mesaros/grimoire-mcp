@@ -92,7 +92,7 @@ pub fn load_pattern(path: &Path) -> Option<Pattern> {
     let mut parts = rest.splitn(2, "\n---\n");
     let yaml = parts.next()?;
     let body = parts.next()?.trim();
-    let metadata: PatternMetadata = serde_yaml::from_str(yaml).ok()?;
+    let metadata: PatternMetadata = serde_yaml_ng::from_str(yaml).ok()?;
 
     Some(Pattern {
         metadata,
