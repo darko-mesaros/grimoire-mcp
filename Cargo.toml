@@ -4,8 +4,13 @@ version = "0.1.2"
 edition = "2024"
 description = "A Model Context Protocol server for managing software development patterns - your personal grimoire of reusable code knowledge"
 
+[features]
+web = ["dep:axum", "dep:pulldown-cmark"]
+
 [dependencies]
 anyhow = "1.0.102"
+axum = { version = "0.8", optional = true }
+pulldown-cmark = { version = "0.13", optional = true }
 rmcp = { version = "1.7.0", features = ["transport-io", "server", "macros", "schemars"] }
 schemars = "1.2.1"
 serde = { version = "1.0.228", features = ["derive"] }
@@ -21,3 +26,8 @@ tui-big-text = "0.8.4"
 [dev-dependencies]
 proptest = "1.11.0"
 tempfile = "3.27.0"
+
+[[bin]]
+name = "web"
+path = "src/bin/web.rs"
+required-features = ["web"]
