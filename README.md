@@ -73,15 +73,39 @@ PATTERNS_DIR="/path/to/your/patterns" ./target/release/browse
 | `PgUp` / `PgDn` | Scroll pattern content |
 | `q` | Quit |
 
+## Pattern Web Viewer
+
+The project also includes a web-based pattern viewer (`web`) that serves your patterns as a browsable web interface on localhost.
+
+### Running the Web Viewer
+
+```bash
+PATTERNS_DIR="/path/to/your/patterns" cargo run --bin web
+```
+
+Or build and run the release binary:
+
+```bash
+cargo build --release
+PATTERNS_DIR="/path/to/your/patterns" ./target/release/web
+```
+
+By default it serves on http://127.0.0.1:3000. You can override the port with the `PORT` environment variable:
+
+```bash
+PORT=8080 PATTERNS_DIR="/path/to/your/patterns" cargo run --bin web
+```
+
 ## Building
 
 ```bash
 cargo build --release
 ```
 
-This produces two binaries:
+This produces three binaries:
 - `./target/release/grimoire-mcp` — the MCP server
 - `./target/release/browse` — the TUI pattern browser
+- `./target/release/web` — the web pattern viewer
 
 ## MCP Client Configuration
 
