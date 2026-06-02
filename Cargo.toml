@@ -6,6 +6,8 @@ description = "A Model Context Protocol server for managing software development
 
 [dependencies]
 anyhow = "1.0.102"
+axum = "0.8"
+pulldown-cmark = "0.13"
 rmcp = { version = "1.7.0", features = ["transport-io", "server", "macros", "schemars"] }
 schemars = "1.2.1"
 serde = { version = "1.0.228", features = ["derive"] }
@@ -21,3 +23,7 @@ tui-big-text = "0.8.4"
 [dev-dependencies]
 proptest = "1.11.0"
 tempfile = "3.27.0"
+
+[[bin]]
+name = "web"
+path = "src/bin/web.rs"
