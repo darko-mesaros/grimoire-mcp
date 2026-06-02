@@ -199,7 +199,11 @@ async fn pattern_detail(
         ));
     };
 
-    // Render markdown to HTML
+    // Render markdown to HTML.
+    // NOTE: Raw HTML in markdown passes through unsanitized. This is acceptable
+    // because this server binds to localhost only and patterns are author-controlled
+    // trusted content. If the server is ever exposed to a network or patterns become
+    // user-contributed, add an HTML sanitizer (e.g. ammonia).
     let mut options = Options::empty();
     options.insert(Options::ENABLE_TABLES);
     options.insert(Options::ENABLE_STRIKETHROUGH);
@@ -275,7 +279,12 @@ fn html_escape(s: &str) -> String {
         .replace('"', "&quot;")
 }
 
-/// Simple URL encoding for pattern names (spaces and special chars)
+/// Simple URL encoding for pattern names.
+/// NOTE: This relies on validate_pattern_name restricting names to [a-zA-Z0-9 _-],
+/// so we only need to handle spaces and underscores as special bytes. Pattern names
+/// loaded from disk could theoretically contain other characters, but in practice
+/// they are all authored through the MCP create_pattern tool which enforces the
+/// character restriction.
 fn urlencoding(s: &str) -> String {
     s.bytes()
         .map(|b| match b {
@@ -307,6 +316,10 @@ async fn main() -> Result<(), anyhow::Error> {
         std::process::exit(1);
     }
 
+    // Patterns are loaded once at startup. There is no hot-reload mechanism;
+    // file changes require restarting the server.
+    // Safety: load_all_patterns() reads PATTERNS_DIR internally via .expect(),
+    // but we have already validated the env var above so it will not panic.
     let patterns = load_all_patterns();
 
     let state = Arc::new(AppState { patterns });
