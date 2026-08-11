@@ -8,7 +8,7 @@ use rmcp::{
     RoleServer, ServerHandler,
     handler::server::{tool::ToolRouter, wrapper::Parameters},
     model::{
-        CallToolResult, Content, Implementation, InitializeRequestParams, InitializeResult,
+        CallToolResult, ContentBlock, Implementation, InitializeRequestParams, InitializeResult,
         ProtocolVersion, ServerCapabilities, ServerInfo,
     },
     schemars,
@@ -165,7 +165,7 @@ impl Patterns {
             .map(|p| format!("- {} ({})", p.metadata.pattern, p.metadata.category))
             .collect();
 
-        Ok(CallToolResult::success(vec![Content::text(format!(
+        Ok(CallToolResult::success(vec![ContentBlock::text(format!(
             "Available patterns:\n{}",
             summary.join("\n")
         ))]))
@@ -202,7 +202,7 @@ impl Patterns {
             .collect();
 
         if results.is_empty() {
-            return Ok(CallToolResult::success(vec![Content::text(
+            return Ok(CallToolResult::success(vec![ContentBlock::text(
                 "No patterns found.",
             )]));
         }
@@ -222,7 +222,7 @@ impl Patterns {
             })
             .collect();
 
-        Ok(CallToolResult::success(vec![Content::text(
+        Ok(CallToolResult::success(vec![ContentBlock::text(
             summary.join("\n\n"),
         )]))
     }
@@ -239,8 +239,8 @@ impl Patterns {
             .find(|p| p.metadata.pattern == pattern_name);
 
         match pattern {
-            Some(p) => Ok(CallToolResult::success(vec![Content::text(&p.content)])),
-            None => Ok(CallToolResult::success(vec![Content::text(format!(
+            Some(p) => Ok(CallToolResult::success(vec![ContentBlock::text(&p.content)])),
+            None => Ok(CallToolResult::success(vec![ContentBlock::text(format!(
                 "Pattern '{}' not found.",
                 pattern_name
             ))])),
@@ -299,7 +299,7 @@ framework: {}
             .join(format!("{}.md", Self::sanitize_filename(&pattern_name)));
 
         match fs::write(&file_path, pattern_content) {
-            Ok(_) => Ok(CallToolResult::success(vec![Content::text(format!(
+            Ok(_) => Ok(CallToolResult::success(vec![ContentBlock::text(format!(
                 "Pattern '{}' created at {:?}",
                 pattern_name, file_path
             ))])),
@@ -317,7 +317,7 @@ impl ServerHandler for Patterns {
     fn get_info(&self) -> ServerInfo {
         ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
             .with_server_info(Implementation::from_build_env())
-            .with_protocol_version(ProtocolVersion::V_2024_11_05)
+            .with_protocol_version(ProtocolVersion::V_2025_11_25)
             .with_instructions(
     "I manage a library of software development patterns stored as markdown files with YAML frontmatter.
     Use me to discover, search, and create reusable code patterns and architectural solutions.
