@@ -157,7 +157,15 @@ impl Patterns {
     }
 
     /// Get all available patterns
-    #[tool(description = "List all available patterns")]
+    #[tool(
+        description = "List all available patterns",
+        annotations(
+            title = "List Patterns",
+            read_only_hint = true,
+            destructive_hint = false,
+            open_world_hint = false
+        )
+    )]
     fn list_patterns(&self) -> Result<CallToolResult, McpError> {
         let summary: Vec<String> = self
             .patterns
@@ -172,7 +180,15 @@ impl Patterns {
     }
 
     /// Search patterns based on input
-    #[tool(description = "Search patterns by query, category, framework or tag")]
+    #[tool(
+        description = "Search patterns by query, category, framework or tag",
+        annotations(
+            title = "Search Patterns",
+            read_only_hint = true,
+            destructive_hint = false,
+            open_world_hint = false
+        )
+    )]
     fn search_patterns(
         &self,
         Parameters(PatternSearchRequest {
@@ -222,13 +238,42 @@ impl Patterns {
             })
             .collect();
 
-        Ok(CallToolResult::success(vec![ContentBlock::text(
+        let structured: Vec<serde_json::Value> = results
+            .iter()
+            .map(|p| {
+                let max_bytes = 200.min(p.content.len());
+                let truncate_at = p
+                    .content
+                    .char_indices()
+                    .map(|(i, _)| i)
+                    .take_while(|&i| i <= max_bytes)
+                    .last()
+                    .unwrap_or(0);
+                serde_json::json!({
+                    "name": p.metadata.pattern,
+                    "category": p.metadata.category,
+                    "preview": &p.content[..truncate_at]
+                })
+            })
+            .collect();
+
+        let mut result = CallToolResult::success(vec![ContentBlock::text(
             summary.join("\n\n"),
-        )]))
+        )]);
+        result.structured_content = Some(serde_json::json!(structured));
+        Ok(result)
     }
 
     /// Get the pattern based on the name
-    #[tool(description = "Get the pattern based on the pattern name")]
+    #[tool(
+        description = "Get the pattern based on the pattern name",
+        annotations(
+            title = "Get Pattern",
+            read_only_hint = true,
+            destructive_hint = false,
+            open_world_hint = false
+        )
+    )]
     fn get_pattern(
         &self,
         Parameters(GetPatternRequest { pattern_name }): Parameters<GetPatternRequest>,
@@ -239,7 +284,19 @@ impl Patterns {
             .find(|p| p.metadata.pattern == pattern_name);
 
         match pattern {
-            Some(p) => Ok(CallToolResult::success(vec![ContentBlock::text(&p.content)])),
+            Some(p) => {
+                let structured = serde_json::json!({
+                    "name": p.metadata.pattern,
+                    "category": p.metadata.category,
+                    "framework": p.metadata.framework,
+                    "tags": p.metadata.tags,
+                    "projects": p.metadata.projects,
+                    "content": p.content
+                });
+                let mut result = CallToolResult::success(vec![ContentBlock::text(&p.content)]);
+                result.structured_content = Some(structured);
+                Ok(result)
+            }
             None => Ok(CallToolResult::success(vec![ContentBlock::text(format!(
                 "Pattern '{}' not found.",
                 pattern_name
@@ -255,7 +312,14 @@ impl Patterns {
 
     /// Create patterns by providing information
     #[tool(
-        description = "Create patterns by providing, category, framework, projects this pattern was used in, tags, and the content. Look to existing patterns for examples on how this should look"
+        description = "Create patterns by providing, category, framework, projects this pattern was used in, tags, and the content. Look to existing patterns for examples on how this should look",
+        annotations(
+            title = "Create Pattern",
+            read_only_hint = false,
+            destructive_hint = false,
+            idempotent_hint = true,
+            open_world_hint = false
+        )
     )]
     fn create_pattern(
         &self,
